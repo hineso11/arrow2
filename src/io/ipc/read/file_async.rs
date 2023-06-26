@@ -148,6 +148,7 @@ pub async fn read_file_metadata_async<R>(reader: &mut R) -> Result<FileMetadata>
 where
     R: AsyncRead + AsyncSeek + Unpin,
 {
+    let start = reader.stream_position().await?;
     let footer_size = read_footer_len(reader).await?;
     // Read footer
     let end = reader.seek(SeekFrom::End(-10 - footer_size as i64)).await?;
@@ -159,7 +160,7 @@ where
         .read_to_end(&mut footer)
         .await?;
 
-    deserialize_footer(&footer, end)
+    deserialize_footer(&footer, end - start)
 }
 
 #[allow(clippy::too_many_arguments)]
