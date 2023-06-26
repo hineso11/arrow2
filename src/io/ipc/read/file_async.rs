@@ -150,7 +150,7 @@ where
 {
     let footer_size = read_footer_len(reader).await?;
     // Read footer
-    reader.seek(SeekFrom::End(-10 - footer_size as i64)).await?;
+    let end = reader.seek(SeekFrom::End(-10 - footer_size as i64)).await?;
 
     let mut footer = vec![];
     footer.try_reserve(footer_size)?;
@@ -159,7 +159,7 @@ where
         .read_to_end(&mut footer)
         .await?;
 
-    deserialize_footer(&footer, u64::MAX)
+    deserialize_footer(&footer, end)
 }
 
 #[allow(clippy::too_many_arguments)]
