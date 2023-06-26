@@ -152,6 +152,7 @@ where
     let footer_size = read_footer_len(reader).await?;
     // Read footer
     let end = reader.seek(SeekFrom::End(-10 - footer_size as i64)).await?;
+    let end = end + 10;
 
     let mut footer = vec![];
     footer.try_reserve(footer_size)?;
